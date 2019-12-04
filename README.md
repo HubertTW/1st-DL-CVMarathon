@@ -1,6 +1,5 @@
 # 1st-DL-CVMarathon
 
-# Computer Vision 100 Marathon
 
 ## day01
 b,g,r=cv2.split(img)
