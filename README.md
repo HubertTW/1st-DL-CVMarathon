@@ -107,7 +107,6 @@ ref:
 Feature Matching
 * L2 norm:計算兩點距離 若小於threshold則視為相同
 * scale space
-  scale parameter:t
  
 ## day11
 CNN:
