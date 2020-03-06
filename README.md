@@ -6,17 +6,21 @@ slice image into three channels
 b,g,r=cv2.split(img)
 ```
 
-## day02
-hue(圓環)/saturation(半徑)/brightess(深淺)
-* HSB(HSV):
+## day02 color presentaion 
+
+![](https://i.imgur.com/SxlAbyA.png)
+
+
+hue(360度圓環)/saturation(半徑)/brightess(深淺)
+* HSB(=HSV):
 saturation:白色到選擇的hue(0~100)
 lightness:100=任何可能的顏色
 
 * HSL(Lightness):
 saturation:灰色到選擇的hue
-lightness:
-100=白色
+lightness:100=白色
 * LAB
+![](https://i.imgur.com/EwOAvMd.png)
 L = Lighness 
 以0~100 決定明亮度
 數值由⼩小到⼤大，由⿊黑到⽩白
@@ -26,6 +30,7 @@ A 以-128~127
 B 以-128~127 
 代表顏⾊色對立的維度
 數值由⼩小到⼤大，由藍藍到黃
+
 ```
 cv2.cvtColor(img,cv2.BGR2HSV)
 ```
@@ -69,6 +74,11 @@ default:Bilinear Interpolation
 cv2.warpAffine(img,Matrix,(col,row))
 ```
 
+
+## day05 
+
+
+
 ## day06
 * Affine Transformation
   1.  共線不變性
@@ -107,6 +117,7 @@ ref:
 Feature Matching
 * L2 norm:計算兩點距離 若小於threshold則視為相同
 * scale space
+  scale parameter:t
  
 ## day11
 CNN:
@@ -181,14 +192,27 @@ https://keras.io/examples/cifar10_cnn/
 
 * global averaging pooling(GAP)
 1. 降低參數量
-2. 
+
+* normalization of input data
+```
+def normalize(X_train,X_test):
+        mean = np.mean(X_train,axis=(0,1,2,3))
+        std = np.std(X_train, axis=(0, 1, 2, 3))
+        X_train = (X_train-mean)/(std+1e-7)
+        X_test = (X_test-mean)/(std+1e-7) 
+        return X_train, X_test,mean,std
+    
+    
+## Normalize Training and Testset    
+x_train, x_test,mean_train,std_train = normalize(x_train, x_test) 
+```
 
 ## day16
 * ImageDataGenerator()
+all parameters:
 two steps of standardlization:
 featurewise_center=以每張feature map 為單位 將平均值設為0
 featurewise_std_normalization=以每張feature map為單位 除以標準差
-
 zca_whitening:Boolean，透過ZCA取出重要特徵
 rotation_range：整數值，控制隨機旋轉⾓角度
 width_shift_range：「浮點、整數、⼀一維數」，圖像寬度上隨機偏移值
@@ -200,7 +224,10 @@ vertical_flip:Boolean，隨機垂直翻轉
 rescale:數值，縮放比例例
 dtype：輸出資料型態
 
-## day17
+ref:
+1. [python imaug github](https://github.com/aleju/imgaug)
+
+## day17 CNN history
 ![](https://i.imgur.com/Bb9bzN2.png)
 
 
@@ -211,10 +238,9 @@ dtype：輸出資料型態
 * [梯度消失與梯度爆炸](https://blog.csdn.net/qq_25737169/article/details/78847691)
 
 * Floating point operation per second(FLOPS):計算模型每秒操作浮點數的次數
-## day18
-VGG16&VGG19
+## day18 VGG16&VGG19
 
-## day19
+## day19 inception module
 inception module:
 我們通常會面臨到要如何選擇kernel_size的問題,而有一個想法是我們就讓模型自己train多個kernel來知道何者較佳,但如此一來會增大參數量因此我們就在這些kernel前先放一個1*1的kernel來減少FLOPS
 * 為何使用1*1 kernel 
@@ -239,10 +265,12 @@ ref:
 * degradition:with the network depth increasing,the accuracu gets saturated
 
 how to solve above problems?
-the ResNet is solution
+the ResNet can be a good option.
+
 h(x)=x+f(x)
 f(x):residual
-if the 18 layers is the optimal sol but we don't know. at first we train 34 layers and the 16 layers are redundant so we design that the input is same as ouput in the 16 layers called "identity mapping".
+
+Assume that the 18 layers is the optimal sol but we don't know.We train 34 layers and the 16(34-18) layers are redundant so we design that the input is same as ouput in the 16 layers called "identity mapping".
 
 ref: 
 1. [反傳遞簡單理解](https://www.brilliantcode.net/1326/backpropagation-1-gradient-descent-chain-rule/)
@@ -506,3 +534,20 @@ ref:
 
 * mobilenetv2 structure:
 ![](https://i.imgur.com/0qRZlgl.png)
+
+# day50 final project 
+
+
+## step1. data 
+darknet has its required directory structure,so we need to create the identical directory and put our data into that.
+
+* xxx.xml:
+  ![](https://i.imgur.com/AUoOC8a.png)
+ 
+* train.txt:
+   ![](https://i.imgur.com/tr7CWtz.png)
+
+ref:
+1. [如何以YOLOv3訓練自己的資料集 ─ 以小蕃茄為例](https://makerpro.cc/2019/12/train-your-dataset-with-yolov3/)
+2. [Darknet yolo 環境搭建以及訓練測試自己的資料集](https://www.itread01.com/content/1546697001.html)
+3. [Run YOLO V3 on Colab for images/videos](https://mozanunal.com/2019/08/yoloColabDemo/)
